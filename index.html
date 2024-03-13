@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>五线谱学习工具</title>
+<style>
+    body { font-family: Arial, sans-serif; text-align: center; }
+    #staff { text-align: center; margin-top: 20px; }
+    .key-container { position: relative; width: 420px; height: 200px; margin: 0 auto; }
+    .white-key { 
+      position: relative;
+      float: left;
+      width: 60px; 
+      height: 200px; 
+      background-color: white; 
+      border: 1px solid #000; 
+      box-sizing: border-box;
+      z-index: 1;
+    }
+    .black-key { 
+      position: absolute;
+      width: 40px; 
+      height: 120px; 
+      background-color: black; 
+      margin-left: 0px;
+      z-index: 2;
+    }
+    /* 位置调整 */
+    .key:nth-child(1) .black-key { left: 100px; }
+    .key:nth-child(2) .black-key { left: 40px; }
+    .key:nth-child(4) .black-key { left: 220px; }
+    .key:nth-child(5) .black-key { left: 280px; }
+    .key:nth-child(6) .black-key { left: 340px; }
+  </style>
+<script src="https://img1.ccgxk.com/ccgxk-oss/js/abc.js" type="text/javascript"></script>
+<script>
+  var notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+  var currentNote = '';
+  var timer;
+  var abcNotation = "K: clef=treble\nL: 1/4\n";
+
+  function showNote() {
+    currentNote = notes[Math.floor(Math.random() * notes.length)];
+    var noteAbc = currentNote + "4"; // 4代表四分音符
+    ABCJS.renderAbc("staff", abcNotation + noteAbc);
+    timer = setTimeout(function() {
+      showResult(false); // 显示结果
+    }, 3000); // 3秒
+  }
+
+  function showResult(correct) {
+    if (correct) {
+      // 如果答案正确，显示“正确”，然后等待半秒后显示下一个音符
+      document.getElementById('result').textContent = '正确';
+      setTimeout(showNote, 500); // 半秒后调用showNote函数
+    } else {
+      // 如果答案错误，弹出消息框
+      var displayNote = currentNote === 'B' ? 'H' : currentNote;
+      alert("错误！正确答案是：" + displayNote);
+      showNote(); // 显示下一个音符
+    }
+  }
+
+  function checkAnswer(note) {
+    clearTimeout(timer);
+    var correct = (note === 'H' && currentNote === 'B') || note === currentNote;
+    showResult(correct); // 根据答案是否正确调用showResult函数
+  }
+</script>
+</head>
+<body>
+
+    <h1>五线谱学习工具</h1>
+    <button onclick="showNote()">显示音符</button>
+    
+    <div id="staff"></div>
+    <div id="result"></div>
+    
+    <div class="key-container">
+      <div class="key"><div class="white-key" onclick="checkAnswer('C')">C</div><div class="black-key" onclick="checkAnswer('C#')">C#</div></div>
+      <div class="key"><div class="white-key" onclick="checkAnswer('D')">D</div><div class="black-key" onclick="checkAnswer('D#')">D#</div></div>
+      <div class="key"><div class="white-key" onclick="checkAnswer('E')">E</div></div>
+      <div class="key"><div class="white-key" onclick="checkAnswer('F')">F</div><div class="black-key" onclick="checkAnswer('F#')">F#</div></div>
+      <div class="key"><div class="white-key" onclick="checkAnswer('G')">G</div><div class="black-key" onclick="checkAnswer('G#')">G#</div></div>
+      <div class="key"><div class="white-key" onclick="checkAnswer('A')">A</div><div class="black-key" onclick="checkAnswer('A#')">A#</div></div>
+      <div class="key"><div class="white-key" onclick="checkAnswer('B')">H</div></div>
+    </div>
+    
+    </body>
+    </html>
